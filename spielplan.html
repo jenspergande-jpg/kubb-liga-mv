@@ -3,996 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spielplan – 1. Hauptspieltag</title>
+<title>Spielplan – 1. Hauptspieltag – Kubb Liga MV 2026</title>
 <style>
-  /* ── Offline-fähige Schriften ── */
-  @font-face {
-    font-family: 'DisplayCondensed';
-    src: local('Impact'), local('Arial Narrow'), local('Franklin Gothic Medium');
-    font-weight: 400;
-    font-style: normal;
-  }
-
   :root {
-    --font-display: 'Impact', 'Arial Narrow', 'Franklin Gothic Medium', 'Haettenschweiler', sans-serif;
+    --font-display: 'Impact', 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
     --font-mono:    'Courier New', 'Consolas', 'Menlo', monospace;
     --font-body:    -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --bg: #0f1117; --surface: #181c27; --surface2: #1e2435;
+    --accent: #e8c84a; --accent2: #4ae8a0; --text: #e8eaf0;
+    --muted: #6b7394; --border: #2a3050; --pause-bg: #12151f;
+    --input-bg: #0f1117; --radius: 6px;
   }
-  :root {
-    --bg: #0f1117;
-    --surface: #181c27;
-    --surface2: #1e2435;
-    --accent: #e8c84a;
-    --accent2: #4ae8a0;
-    --text: #e8eaf0;
-    --muted: #6b7394;
-    --border: #2a3050;
-    --pause-bg: #12151f;
-    --input-bg: #0f1117;
-    --radius: 6px;
-  }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 32px 16px 60px;
-  }
-
-  /* ── Header ── */
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-    position: relative;
-  }
-  header::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 3px;
-    background: var(--accent);
-    margin: 12px auto 0;
-  }
-  .title-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  h1 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 6vw, 64px);
-    letter-spacing: 3px;
-    color: var(--text);
-    line-height: 1;
-  }
+  body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; padding: 32px 16px 60px; }
+  header { text-align: center; margin-bottom: 40px; }
+  header::after { content: ''; display: block; width: 80px; height: 3px; background: var(--accent); margin: 12px auto 0; }
+  .title-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 64px); letter-spacing: 3px; color: var(--text); line-height: 1; }
   h1 span { color: var(--accent); }
-
-  /* ── Unified table grid ── */
-  .schedule-grid {
-    display: grid;
-    grid-template-columns: 120px 110px repeat(5, 1fr);
-    gap: 6px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  /* field header cells live directly in schedule-grid */
-  .field-label {
-    background: var(--accent);
-    color: #0f1117;
-    font-family: var(--font-display);
-    font-size: 15px;
-    letter-spacing: 2px;
-    text-align: center;
-    padding: 6px 4px;
-    border-radius: var(--radius);
-  }
-  .header-spacer { /* empty cells for Runde + Uhrzeit columns */ }
-
-  /* ── Single round row – now just a CSS subgrid span ── */
-  .round-row {
-    display: contents; /* children flow directly into schedule-grid columns */
-    animation: fadeIn 0.4s ease both;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  .schedule-grid { display: grid; grid-template-columns: 110px 100px repeat(6, 1fr); gap: 5px; max-width: 1300px; margin: 0 auto; }
+  .field-label { background: var(--accent); color: #0f1117; font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; text-align: center; padding: 6px 4px; border-radius: var(--radius); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .match-cell, .round-label, .time-label { animation: fadeIn 0.4s ease both; }
-
-  /* Round label */
-  .round-label {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 4px;
-    text-align: center;
-  }
-  .round-label .rnum {
-    font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .round-label .rname {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* Time label */
-  .time-label {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 4px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--muted);
-    text-align: center;
-    line-height: 1.5;
-  }
-
-  /* Match cell */
-  .match-cell {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 6px;
-    gap: 6px;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .match-cell:hover {
-    border-color: var(--accent);
-    background: var(--surface2);
-  }
-  .match-cell:focus-within {
-    border-color: var(--accent2);
-    background: var(--surface2);
-  }
-
-  .players {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    width: 100%;
-    justify-content: center;
-  }
-  .player {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-    text-align: center;
-    flex: 1;
-  }
-  .vs-dot {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-
-  .score-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .score-input {
-    width: 32px;
-    height: 26px;
-    background: var(--input-bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-size: 18px;
-    text-align: center;
-    outline: none;
-    transition: border-color 0.15s, color 0.15s;
-    -moz-appearance: textfield;
-  }
-  .score-input::-webkit-outer-spin-button,
-  .score-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .score-input:focus {
-    border-color: var(--accent2);
-    color: var(--accent2);
-  }
+  .round-label { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; text-align: center; }
+  .round-label .rnum { font-family: var(--font-display); font-size: 20px; color: var(--accent); line-height: 1; }
+  .round-label .rname { font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .time-label { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 6px 4px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-align: center; line-height: 1.5; }
+  .match-cell { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 4px; gap: 5px; transition: border-color 0.2s, background 0.2s; }
+  .match-cell:hover { border-color: var(--accent); background: var(--surface2); }
+  .match-cell:focus-within { border-color: var(--accent2); background: var(--surface2); }
+  .players { display: flex; align-items: center; gap: 4px; width: 100%; justify-content: center; }
+  .player { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; text-align: center; flex: 1; }
+  .vs-dot { font-family: var(--font-mono); font-size: 9px; color: var(--muted); flex-shrink: 0; }
+  .score-row { display: flex; align-items: center; gap: 3px; }
+  .score-input { width: 30px; height: 24px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; color: var(--accent); font-family: var(--font-display); font-size: 16px; text-align: center; outline: none; transition: border-color 0.15s; -moz-appearance: textfield; }
+  .score-input::-webkit-outer-spin-button, .score-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .score-input:focus { border-color: var(--accent2); color: var(--accent2); }
   .score-input.filled { color: var(--accent); }
-  .colon {
-    font-family: var(--font-display);
-    font-size: 18px;
-    color: var(--muted);
-  }
-
-  /* ── Pause row ── */
-  .pause-row {
-    display: contents;
-  }
-  .pause-label {
-    background: var(--pause-bg);
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-align: center;
-  }
-  .pause-bar {
-    grid-column: span 5;
-    background: var(--pause-bg);
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    font-family: var(--font-display);
-    font-size: 14px;
-    letter-spacing: 3px;
-    color: var(--muted);
-  }
-
-  /* ── Save button ── */
-  .actions {
-    max-width: 1100px;
-    margin: 28px auto 0;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-  button.save-btn {
-    font-family: var(--font-display);
-    font-size: 16px;
-    letter-spacing: 2px;
-    padding: 10px 28px;
-    background: var(--accent);
-    color: #0f1117;
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-  button.save-btn:hover { background: #f0d860; transform: translateY(-1px); }
-  button.save-btn:active { transform: translateY(0); }
-  button.reset-btn {
-    font-family: var(--font-display);
-    font-size: 16px;
-    letter-spacing: 2px;
-    padding: 10px 28px;
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-  }
+  .colon { font-family: var(--font-display); font-size: 16px; color: var(--muted); }
+  .pause-label { background: var(--pause-bg); border: 1px dashed var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 10px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .pause-bar { grid-column: span 6; background: var(--pause-bg); border: 1px dashed var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 10px; font-family: var(--font-display); font-size: 13px; letter-spacing: 3px; color: var(--muted); }
+  .actions { max-width: 1300px; margin: 24px auto 0; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+  button { font-family: var(--font-display); font-size: 15px; letter-spacing: 2px; padding: 10px 24px; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; }
+  button.save-btn { background: var(--accent); color: #0f1117; border: none; }
+  button.save-btn:hover { background: #f0d860; }
+  button.reset-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); }
   button.reset-btn:hover { color: var(--text); border-color: var(--muted); }
-  button.export-btn {
-    font-family: var(--font-display);
-    font-size: 16px;
-    letter-spacing: 2px;
-    padding: 10px 28px;
-    background: transparent;
-    color: var(--accent2);
-    border: 1px solid var(--accent2);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-  button.export-btn:hover { background: var(--accent2); color: #0f1117; }
-
-  .toast {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    background: var(--accent2);
-    color: #0f1117;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 1px;
-    padding: 10px 20px;
-    border-radius: var(--radius);
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.3s, transform 0.3s;
-    pointer-events: none;
-  }
+  button.export-btn, button.sync-btn { background: transparent; color: var(--accent2); border: 1px solid var(--accent2); }
+  button.export-btn:hover, button.sync-btn:hover { background: var(--accent2); color: #0f1117; }
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--accent2); color: #0f1117; font-family: var(--font-mono); font-size: 12px; letter-spacing: 1px; padding: 10px 20px; border-radius: var(--radius); opacity: 0; transform: translateY(8px); transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 999; }
   .toast.show { opacity: 1; transform: translateY(0); }
-
-  /* ── Responsive ── */
-  @media (max-width: 760px) {
-    .schedule-grid { grid-template-columns: 70px 80px repeat(5, 1fr); gap: 3px; }
-    .field-label  { font-size: 12px; padding: 5px 2px; }
-    .player       { font-size: 10px; }
-    .score-input  { width: 26px; height: 22px; font-size: 15px; }
-    .colon        { font-size: 15px; }
-    .rnum         { font-size: 17px; }
-    .time-label   { font-size: 9px; }
-  }
-
-  /* ── Rangliste ── */
-  .ranking-section {
-    max-width: 1100px;
-    margin: 48px auto 0;
-  }
-  .ranking-header {
-    text-align: center;
-    margin-bottom: 24px;
-    position: relative;
-  }
-  .ranking-header::before {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 1px;
-    background: var(--border);
-    margin-bottom: 24px;
-  }
-  .ranking-header h2 {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 4vw, 48px);
-    letter-spacing: 3px;
-    color: var(--text);
-  }
+  .ranking-section { max-width: 1300px; margin: 48px auto 0; }
+  .ranking-header { text-align: center; margin-bottom: 24px; }
+  .ranking-header::before { content: ''; display: block; width: 100%; height: 1px; background: var(--border); margin-bottom: 24px; }
+  .ranking-header h2 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); letter-spacing: 3px; }
   .ranking-header h2 span { color: var(--accent); }
-  .ranking-subtitle {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-top: 6px;
-  }
-
-  .ranking-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 5px;
-  }
-
-  .ranking-row {
-    transition: transform 0.15s;
-  }
-  .ranking-row:hover { transform: translateX(4px); }
-
-  .rank-cell {
-    width: 60px;
-    padding: 14px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-right: none;
-    border-radius: var(--radius) 0 0 var(--radius);
-    font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--muted);
-    text-align: center;
-  }
-  .rank-cell.gold   { color: #FFD700; border-color: #FFD700; background: #1a1900; }
+  .ranking-subtitle { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
+  .ranking-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
+  .ranking-row:hover { transform: translateX(4px); transition: transform 0.15s; }
+  .rank-cell { width: 60px; padding: 14px 12px; background: var(--surface); border: 1px solid var(--border); border-right: none; border-radius: var(--radius) 0 0 var(--radius); font-family: var(--font-display); font-size: 22px; color: var(--muted); text-align: center; }
+  .rank-cell.gold { color: #FFD700; border-color: #FFD700; background: #1a1900; }
   .rank-cell.silver { color: #C0C0C0; border-color: #C0C0C0; background: #161616; }
   .rank-cell.bronze { color: #CD7F32; border-color: #CD7F32; background: #1a1200; }
-
-  .name-cell {
-    padding: 14px 16px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .name-cell.gold   { background: #1a1900; border-color: #FFD700; }
+  .name-cell { padding: 14px 16px; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 15px; font-weight: 600; }
+  .name-cell.gold { background: #1a1900; border-color: #FFD700; }
   .name-cell.silver { background: #161616; border-color: #C0C0C0; }
   .name-cell.bronze { background: #1a1200; border-color: #CD7F32; }
-
-  .bar-cell {
-    padding: 14px 12px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    width: 40%;
-  }
-  .bar-cell.gold   { background: #1a1900; border-color: #FFD700; }
+  .bar-cell { padding: 14px 12px; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); width: 40%; }
+  .bar-cell.gold { background: #1a1900; border-color: #FFD700; }
   .bar-cell.silver { background: #161616; border-color: #C0C0C0; }
   .bar-cell.bronze { background: #1a1200; border-color: #CD7F32; }
-
-  .bar-track {
-    background: var(--border);
-    border-radius: 3px;
-    height: 8px;
-    width: 100%;
-    overflow: hidden;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--accent);
-    transition: width 0.8s cubic-bezier(.4,0,.2,1);
-    width: 0%;
-  }
-  .bar-fill.gold   { background: #FFD700; }
-  .bar-fill.silver { background: #C0C0C0; }
-  .bar-fill.bronze { background: #CD7F32; }
-
-  .score-cell {
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: none;
-    border-radius: 0 var(--radius) var(--radius) 0;
-    font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--accent);
-    text-align: right;
-    white-space: nowrap;
-    min-width: 80px;
-  }
-  .score-cell.gold   { color: #FFD700; background: #1a1900; border-color: #FFD700; }
+  .bar-track { background: var(--border); border-radius: 3px; height: 8px; width: 100%; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+  .bar-fill.gold { background: #FFD700; } .bar-fill.silver { background: #C0C0C0; } .bar-fill.bronze { background: #CD7F32; }
+  .score-cell { padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-left: none; border-radius: 0 var(--radius) var(--radius) 0; font-family: var(--font-display); font-size: 22px; color: var(--accent); text-align: right; white-space: nowrap; min-width: 80px; }
+  .score-cell.gold { color: #FFD700; background: #1a1900; border-color: #FFD700; }
   .score-cell.silver { color: #C0C0C0; background: #161616; border-color: #C0C0C0; }
   .score-cell.bronze { color: #CD7F32; background: #1a1200; border-color: #CD7F32; }
-
-  .score-cell .pts-label {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--font-mono);
-    letter-spacing: 1px;
-    margin-left: 4px;
-  }
-
-  .ranking-empty {
-    text-align: center;
-    padding: 32px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 2px;
-  }
-
-  @media (max-width: 760px) {
+  .score-cell .pts-label { font-size: 10px; color: var(--muted); font-family: var(--font-mono); letter-spacing: 1px; margin-left: 4px; }
+  .ranking-empty { text-align: center; padding: 32px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 2px; }
+  @media (max-width: 900px) {
+    .schedule-grid { grid-template-columns: 60px 70px repeat(6, 1fr); gap: 3px; }
+    .field-label { font-size: 10px; padding: 4px 2px; }
+    .player { font-size: 9px; }
+    .score-input { width: 24px; height: 20px; font-size: 13px; }
+    .colon { font-size: 13px; }
     .bar-cell { display: none; }
     .rank-cell { width: 44px; font-size: 17px; padding: 10px 6px; }
     .score-cell { font-size: 17px; padding: 10px 10px; }
     .name-cell { font-size: 13px; padding: 10px 10px; }
   }
-
-  /* ── Nachholspiele ── */
-  .nachhole-section {
-    max-width: 1100px;
-    margin: 48px auto 0;
-  }
-  .nachhole-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .nachhole-badge {
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 6px 14px;
-    font-family: var(--font-display);
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .nachhole-title {
-    font-family: var(--font-display);
-    font-size: clamp(20px, 3vw, 32px);
-    letter-spacing: 2px;
-    color: var(--text);
-  }
-  .nachhole-title span { color: var(--accent); }
-  .nachhole-date {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    margin-left: auto;
-  }
-
-  .nachhole-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  @media (max-width: 600px) {
-    .nachhole-grid { grid-template-columns: 1fr; }
-    .nachhole-header { flex-wrap: wrap; }
-    .nachhole-date { margin-left: 0; }
-  }
-
-  .nachhole-match {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    transition: border-color 0.2s;
-  }
-  .nachhole-match:hover { border-color: var(--accent); }
-  .nachhole-match:focus-within { border-color: var(--accent2); }
-
-  .nm-player {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .nm-player.nachholer { color: var(--accent2); }
-  .nm-vs {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-  .nm-score {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-  }
 </style>
 </head>
 <body>
-
 <header>
   <p class="title-label">Kubb Liga Mecklenburg Vorpommern</p>
   <h1>1. Haupt<span>spieltag</span></h1>
 </header>
-
-<!-- Single unified grid -->
 <div class="schedule-grid" id="rounds">
-  <!-- Header row -->
-  <div class="header-spacer"></div>
-  <div class="header-spacer"></div>
+  <div></div><div></div>
   <div class="field-label">Feld 1</div>
   <div class="field-label">Feld 2</div>
   <div class="field-label">Feld 3</div>
   <div class="field-label">Feld 4</div>
   <div class="field-label">Feld 5</div>
+  <div class="field-label">Feld 6</div>
 </div>
-
 <div class="actions">
   <button class="reset-btn" onclick="resetAll()">Zurücksetzen</button>
   <button class="export-btn" onclick="exportCSV()">Export CSV ↓</button>
-  <button class="export-btn" onclick="syncToSheets()" style="color:#4ae8a0;border-color:#4ae8a0;">Sync ↑ Sheets</button>
+  <button class="sync-btn" onclick="syncToSheets()">Sync ↑ Sheets</button>
   <button class="save-btn" onclick="saveScores()">Speichern ✓</button>
 </div>
-
-<div class="toast" id="toast">Ergebnisse gespeichert!</div>
-
-<!-- Nachholspiele Schindhard -->
-<div class="nachhole-section">
-  <div class="nachhole-header">
-    <div class="nachhole-badge">NACHHOLSPIELE</div>
-    <div class="nachhole-title">📍 Schind<span>hard</span></div>
-    <div class="nachhole-date">14.–16. MAI 2026</div>
-  </div>
-  <div class="nachhole-grid" id="nachhole-schindhard"></div>
-</div>
-
-<!-- Nachholspiele OKM -->
-<div class="nachhole-section">
-  <div class="nachhole-header">
-    <div class="nachhole-badge">NACHHOLSPIELE</div>
-    <div class="nachhole-title">📍 <span>OKM</span></div>
-    <div class="nachhole-date">30. MAI 2026</div>
-  </div>
-  <div class="nachhole-grid" id="nachhole-okm"></div>
-</div>
-
-<!-- Rangliste -->
+<div class="toast" id="toast"></div>
 <div class="ranking-section">
   <div class="ranking-header">
     <h2>Rang<span>liste</span></h2>
-    <p class="ranking-subtitle">Gesamtpunktzahl · Landesliga · inkl. Nachholspiele</p>
+    <p class="ranking-subtitle">Gesamtpunktzahl · Kubb Liga MV 2026</p>
   </div>
-  <div id="ranking-container">
-    <p class="ranking-empty">── Noch keine Ergebnisse eingetragen ──</p>
-  </div>
+  <div id="ranking-container"><p class="ranking-empty">── Noch keine Ergebnisse eingetragen ──</p></div>
 </div>
-
 <script>
-const data = [
-  { round: "R1",  name: "Runde 1",  time: "10:00\n10:25", matches: [["Jens","Seb."],["Ali","Rüd."],["Tim","Tom"],["Sven","Klaus"],["Aldo","Eitel"]] },
-  { round: "R2",  name: "Runde 2",  time: "10:30\n10:55", matches: [["Jens","Rüd."],["Seb.","Tom"],["Ali","Klaus"],["Tim","Eitel"],["Sven","Aldo"]] },
-  { round: "R3",  name: "Runde 3",  time: "11:00\n11:25", matches: [["Jens","Tom"],["Rüd.","Klaus"],["Seb.","Eitel"],["Ali","Aldo"],["Tim","Sven"]] },
-  { round: "R4",  name: "Runde 4",  time: "11:30\n11:55", matches: [["Jens","Klaus"],["Tom","Eitel"],["Rüd.","Aldo"],["Seb.","Sven"],["Ali","Tim"]] },
-  { round: "–",   name: "PAUSE",    time: "12:00\n12:20", matches: null },
-  { round: "R5",  name: "Runde 5",  time: "12:20\n12:45", matches: [["Jens","Eitel"],["Klaus","Aldo"],["Tom","Sven"],["Rüd.","Tim"],["Seb.","Ali"]] },
-  { round: "R6",  name: "Runde 6",  time: "12:50\n13:15", matches: [["Jens","Aldo"],["Eitel","Sven"],["Klaus","Tim"],["Tom","Ali"],["Rüd.","Seb."]] },
-  { round: "R7",  name: "Runde 7",  time: "13:20\n13:45", matches: [["Jens","Sven"],["Aldo","Tim"],["Eitel","Ali"],["Klaus","Seb."],["Tom","Rüd."]] },
-  { round: "R8",  name: "Runde 8",  time: "13:50\n14:15", matches: [["Jens","Tim"],["Sven","Ali"],["Aldo","Seb."],["Eitel","Rüd."],["Klaus","Tom"]] },
-  { round: "R9",  name: "Runde 9",  time: "14:20\n14:45", matches: [["Jens","Ali"],["Tim","Seb."],["Sven","Rüd."],["Aldo","Tom"],["Eitel","Klaus"]] },
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz2IrIx09M_GFPDMBjasd64Isgc2O3SYOR4Cgoe3SRck2YMrXfr6HSM7woAX_t6TPdV/exec';
+const data=[
+  {round:'R1', name:'Runde 1',  time:'10:00\n10:25', matches:[['Jens','Nils'],['Seb.','Andreas'],['Ali','Eitel'],['Rüd.','Aldo'],['Tim','Klaus'],['Tom','Sven']]},
+  {round:'R2', name:'Runde 2',  time:'10:30\n10:55', matches:[['Jens','Andreas'],['Nils','Eitel'],['Seb.','Aldo'],['Ali','Klaus'],['Rüd.','Sven'],['Tim','Tom']]},
+  {round:'R3', name:'Runde 3',  time:'11:00\n11:25', matches:[['Jens','Eitel'],['Andreas','Aldo'],['Nils','Klaus'],['Seb.','Sven'],['Ali','Tom'],['Rüd.','Tim']]},
+  {round:'R4', name:'Runde 4',  time:'11:30\n11:55', matches:[['Jens','Aldo'],['Eitel','Klaus'],['Andreas','Sven'],['Nils','Tom'],['Seb.','Tim'],['Ali','Rüd.']]},
+  {round:'–',  name:'PAUSE',    time:'12:00\n12:20', matches:null},
+  {round:'R5', name:'Runde 5',  time:'12:20\n12:45', matches:[['Jens','Klaus'],['Aldo','Sven'],['Eitel','Tom'],['Andreas','Tim'],['Nils','Rüd.'],['Seb.','Ali']]},
+  {round:'R6', name:'Runde 6',  time:'12:50\n13:15', matches:[['Jens','Sven'],['Klaus','Tom'],['Aldo','Tim'],['Eitel','Rüd.'],['Andreas','Ali'],['Nils','Seb.']]},
+  {round:'R7', name:'Runde 7',  time:'13:20\n13:45', matches:[['Jens','Tom'],['Sven','Tim'],['Klaus','Rüd.'],['Aldo','Ali'],['Eitel','Seb.'],['Andreas','Nils']]},
+  {round:'R8', name:'Runde 8',  time:'13:50\n14:15', matches:[['Jens','Tim'],['Tom','Rüd.'],['Sven','Ali'],['Klaus','Seb.'],['Aldo','Nils'],['Eitel','Andreas']]},
+  {round:'R9', name:'Runde 9',  time:'14:20\n14:45', matches:[['Jens','Rüd.'],['Tim','Ali'],['Tom','Seb.'],['Sven','Nils'],['Klaus','Andreas'],['Aldo','Eitel']]},
+  {round:'R10',name:'Runde 10', time:'14:50\n15:15', matches:[['Jens','Ali'],['Rüd.','Seb.'],['Tim','Nils'],['Tom','Andreas'],['Sven','Eitel'],['Klaus','Aldo']]},
+  {round:'R11',name:'Runde 11', time:'15:20\n15:45', matches:[['Jens','Seb.'],['Ali','Nils'],['Rüd.','Andreas'],['Tim','Eitel'],['Tom','Aldo'],['Sven','Klaus']]},
 ];
-
-// ── Nachholspiele ──
-const nachholData = {
-  schindhard: [
-    // Andreas Nelhübel (7 Spiele – ohne Eitel)
-    ['Andreas','Jens'],['Andreas','Ali'],['Andreas','Tim'],['Andreas','Tom'],
-    ['Andreas','Sven'],['Andreas','Klaus'],['Andreas','Aldo'],
-    // Nils Patzer (7 Spiele – ohne Eitel)
-    ['Nils','Jens'],['Nils','Ali'],['Nils','Tim'],['Nils','Tom'],
-    ['Nils','Sven'],['Nils','Klaus'],['Nils','Aldo'],
-  ],
-  okm: [
-    // Andreas Nelhübel (4 Spiele)
-    ['Andreas','Seb.'],['Andreas','Rüd.'],['Andreas','Eitel'],
-    // Nils Patzer (4 Spiele)
-    ['Nils','Seb.'],['Nils','Rüd.'],['Nils','Eitel'],
-  ]
-};
-
-// Name display map
-const nameMap = {
-  'Jens':'Jens Pergande','Seb.':'Sebastian Grün','Ali':'Ali Patzer',
-  'Rüd.':'Rüdiger Schulz','Tim':'Tim Patzer','Tom':'Tom Regenstein',
-  'Sven':'Sven Mampe','Klaus':'Klaus Riedel','Aldo':'Aldo Mampe',
-  'Eitel':'Eitel Redmer','Andreas':'Andreas Nelhübel','Nils':'Nils Patzer'
-};
-const nachholer = ['Andreas','Nils'];
-
-function buildNachholSection(containerId, matches) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  matches.forEach((m, i) => {
-    const id = `${containerId}_${i}`;
-    const isNachholerA = nachholer.includes(m[0]);
-    const isNachholerB = nachholer.includes(m[1]);
-    const cell = document.createElement('div');
-    cell.className = 'nachhole-match';
-    cell.innerHTML = `
-      <span class="nm-player ${isNachholerA?'nachholer':''}">${nameMap[m[0]]||m[0]}</span>
-      <span class="nm-vs">vs</span>
-      <span class="nm-player ${isNachholerB?'nachholer':''}">${nameMap[m[1]]||m[1]}</span>
-      <div class="nm-score">
-        <input class="score-input nachhole-input" type="number" min="0" max="99"
-               id="${id}_a" placeholder="–" oninput="validateScore(this)" onkeydown="numOnly(event)">
-        <span class="colon">:</span>
-        <input class="score-input nachhole-input" type="number" min="0" max="99"
-               id="${id}_b" placeholder="–" oninput="validateScore(this)" onkeydown="numOnly(event)">
-      </div>
-    `;
-    container.appendChild(cell);
-  });
-}
-
-buildNachholSection('nachhole-schindhard', nachholData.schindhard);
-buildNachholSection('nachhole-okm', nachholData.okm);
-
-const container = document.getElementById('rounds');
-
-data.forEach((row, ri) => {
-  if (!row.matches) {
-    // Pause row – 7 direct children: round-label, time-label, pause-bar (span 5)
-    const rl = document.createElement('div');
-    rl.className = 'pause-label';
-    rl.innerHTML = `${row.round}<br>${row.name}`;
-    container.appendChild(rl);
-
-    const tl = document.createElement('div');
-    tl.className = 'pause-label';
-    tl.innerHTML = row.time.replace('\n','<br>');
-    container.appendChild(tl);
-
-    const pb = document.createElement('div');
-    pb.className = 'pause-bar';
-    pb.textContent = '── Mittagspause ──';
-    container.appendChild(pb);
+const nameMap={'Jens':'Jens Pergande','Seb.':'Sebastian Grün','Ali':'Ali Patzer','Rüd.':'Rüdiger Schulz','Tim':'Tim Patzer','Tom':'Tom Regenstein','Sven':'Sven Mampe','Klaus':'Klaus Riedel','Aldo':'Aldo Mampe','Eitel':'Eitel Redmer','Andreas':'Andreas Nelhübel','Nils':'Nils Patzer'};
+const allPlayers=[{key:'Jens',name:'Jens Pergande'},{key:'Seb.',name:'Sebastian Grün'},{key:'Ali',name:'Ali Patzer'},{key:'Rüd.',name:'Rüdiger Schulz'},{key:'Tim',name:'Tim Patzer'},{key:'Tom',name:'Tom Regenstein'},{key:'Sven',name:'Sven Mampe'},{key:'Klaus',name:'Klaus Riedel'},{key:'Aldo',name:'Aldo Mampe'},{key:'Eitel',name:'Eitel Redmer'},{key:'Andreas',name:'Andreas Nelhübel'},{key:'Nils',name:'Nils Patzer'}];
+const container=document.getElementById('rounds');
+data.forEach((row,ri)=>{
+  if(!row.matches){
+    const rl=document.createElement('div');rl.className='pause-label';rl.innerHTML=`${row.round}<br>${row.name}`;container.appendChild(rl);
+    const tl=document.createElement('div');tl.className='pause-label';tl.innerHTML=row.time.replace('\n','<br>');container.appendChild(tl);
+    const pb=document.createElement('div');pb.className='pause-bar';pb.textContent='── Mittagspause ──';container.appendChild(pb);
     return;
   }
-
-  // Round label
-  const rl = document.createElement('div');
-  rl.className = 'round-label';
-  rl.innerHTML = `<span class="rnum">${row.round}</span><span class="rname">${row.name}</span>`;
-  container.appendChild(rl);
-
-  // Time label
-  const tl = document.createElement('div');
-  tl.className = 'time-label';
-  tl.innerHTML = row.time.replace('\n','<br>');
-  container.appendChild(tl);
-
-  // Match cells
-  row.matches.forEach((m, fi) => {
-    const cell = document.createElement('div');
-    cell.className = 'match-cell';
-    const id = `r${ri}f${fi}`;
-    cell.innerHTML = `
-      <div class="players">
-        <span class="player">${m[0]}</span>
-        <span class="vs-dot">vs</span>
-        <span class="player">${m[1]}</span>
-      </div>
-      <div class="score-row">
-        <input class="score-input" type="number" min="0" max="99" id="${id}_a" placeholder="–"
-               oninput="validateScore(this)" onkeydown="numOnly(event)">
-        <span class="colon">:</span>
-        <input class="score-input" type="number" min="0" max="99" id="${id}_b" placeholder="–"
-               oninput="validateScore(this)" onkeydown="numOnly(event)">
-      </div>
-    `;
+  const rl=document.createElement('div');rl.className='round-label';rl.innerHTML=`<span class="rnum">${row.round}</span><span class="rname">${row.name}</span>`;container.appendChild(rl);
+  const tl=document.createElement('div');tl.className='time-label';tl.innerHTML=row.time.replace('\n','<br>');container.appendChild(tl);
+  row.matches.forEach((m,fi)=>{
+    const cell=document.createElement('div');cell.className='match-cell';
+    const id=`r${ri}f${fi}`;
+    cell.innerHTML=`<div class="players"><span class="player">${m[0]}</span><span class="vs-dot">vs</span><span class="player">${m[1]}</span></div><div class="score-row"><input class="score-input" type="number" min="0" max="99" id="${id}_a" placeholder="–" oninput="validateScore(this)" onkeydown="numOnly(event)"><span class="colon">:</span><input class="score-input" type="number" min="0" max="99" id="${id}_b" placeholder="–" oninput="validateScore(this)" onkeydown="numOnly(event)"></div>`;
     container.appendChild(cell);
   });
 });
-
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2IrIx09M_GFPDMBjasd64Isgc2O3SYOR4Cgoe3SRck2YMrXfr6HSM7woAX_t6TPdV/exec';
-
-async function syncToSheets() {
-  const scores = [];
-  data.forEach((row, ri) => {
-    if (!row.matches) return;
-    row.matches.forEach((m, fi) => {
-      const a = document.getElementById(`r${ri}f${fi}_a`)?.value || '';
-      const b = document.getElementById(`r${ri}f${fi}_b`)?.value || '';
-      if (a !== '' || b !== '')
-        scores.push([row.name, nameMap[m[0]]||m[0], `${a}:${b}`, nameMap[m[1]]||m[1]]);
-    });
-  });
-  ['schindhard','okm'].forEach(loc => {
-    const label = loc === 'schindhard' ? 'Schindhard' : 'OKM';
-    nachholData[loc].forEach((m, i) => {
-      const a = document.getElementById(`nachhole-${loc}_${i}_a`)?.value || '';
-      const b = document.getElementById(`nachhole-${loc}_${i}_b`)?.value || '';
-      if (a !== '' || b !== '')
-        scores.push([label, nameMap[m[0]]||m[0], `${a}:${b}`, nameMap[m[1]]||m[1]]);
-    });
-  });
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({scores})
-    });
-    showToast('✓ Mit Google Sheets synchronisiert!');
-  } catch(err) { showToast('⚠ Sync fehlgeschlagen'); }
+function markFilled(el){el.classList.toggle('filled',el.value!=='');}
+function numOnly(e){if(['-','e','+','.'].includes(e.key))e.preventDefault();}
+function validateScore(input){
+  let val=parseInt(input.value)||0;
+  if(val>16){input.value=16;val=16;}
+  const id=input.id,isA=id.endsWith('_a');
+  const partnerId=isA?id.replace('_a','_b'):id.replace('_b','_a');
+  const partner=document.getElementById(partnerId);
+  if(!partner)return;
+  const pv=parseInt(partner.value)||0;
+  if(val===16&&pv>10)partner.value=10;
+  if(pv===16&&val>10)input.value=10;
+  markFilled(input);updateRanking();
 }
-
-async function loadFromSheets() {
-  try {
-    const res = await fetch(SCRIPT_URL + '?t=' + Date.now());
-    const json = await res.json();
-    if (json.status === 'ok' && json.data && json.data.length > 1) {
-      json.data.slice(1).forEach(row => {
-        const [,p1,ergebnis,p2] = row;
-        if (!ergebnis || !ergebnis.includes(':')) return;
-        const [a,b] = ergebnis.split(':');
-        const key1 = Object.keys(nameMap).find(k=>nameMap[k]===p1)||p1;
-        const key2 = Object.keys(nameMap).find(k=>nameMap[k]===p2)||p2;
-        data.forEach((row,ri) => {
-          if (!row.matches) return;
-          row.matches.forEach((m,fi) => {
-            if (m[0]===key1 && m[1]===key2) {
-              const ia=document.getElementById(`r${ri}f${fi}_a`);
-              const ib=document.getElementById(`r${ri}f${fi}_b`);
-              if(ia){ia.value=a;markFilled(ia);} if(ib){ib.value=b;markFilled(ib);}
-            }
-          });
-        });
-        ['schindhard','okm'].forEach(loc => {
-          nachholData[loc].forEach((m,i) => {
-            if (m[0]===key1 && m[1]===key2) {
-              const ia=document.getElementById(`nachhole-${loc}_${i}_a`);
-              const ib=document.getElementById(`nachhole-${loc}_${i}_b`);
-              if(ia){ia.value=a;markFilled(ia);} if(ib){ib.value=b;markFilled(ib);}
-            }
-          });
-        });
-      });
-      updateRanking();
-      showToast('✓ Daten geladen!');
-    }
-  } catch(err) { loadScores(); updateRanking(); }
-}
-
-// Load saved scores from localStorage
-function loadScores() {
-  const saved = JSON.parse(localStorage.getItem('spielplan_scores') || '{}');
-  for (const [k, v] of Object.entries(saved)) {
-    const el = document.getElementById(k);
-    if (el) { el.value = v; if (v !== '') el.classList.add('filled'); }
-  }
-}
-
-function markFilled(el) {
-  el.classList.toggle('filled', el.value !== '');
-}
-
-function numOnly(e) {
-  if (['-','e','+','.'].includes(e.key)) e.preventDefault();
-}
-
-function validateScore(input) {
-  let val = parseInt(input.value) || 0;
-  // Max 16 immer
-  if (val > 16) { input.value = 16; val = 16; }
-  // Finde das Partner-Input
-  const id = input.id;
-  const isA = id.endsWith('_a');
-  const partnerId = isA ? id.replace('_a','_b') : id.replace('_b','_a');
-  const partner = document.getElementById(partnerId);
-  if (!partner) return;
-  const partnerVal = parseInt(partner.value) || 0;
-  // Wenn ich 16 habe → Partner max. 10
-  if (val === 16 && partnerVal > 10) partner.value = 10;
-  // Wenn Partner 16 hat → ich max. 10
-  if (partnerVal === 16 && val > 10) { input.value = 10; }
-  markFilled(input);
-  updateRanking();
-}
-
-function saveScores() {
-  const inputs = document.querySelectorAll('.score-input');
-  const scores = {};
-  inputs.forEach(inp => { scores[inp.id] = inp.value; });
-  localStorage.setItem('spielplan_scores', JSON.stringify(scores));
-  showToast('Ergebnisse gespeichert!');
-}
-
-function resetAll() {
-  if (!confirm('Alle Ergebnisse zurücksetzen?')) return;
-  document.querySelectorAll('.score-input').forEach(inp => {
-    inp.value = '';
-    inp.classList.remove('filled');
-  });
-  localStorage.removeItem('spielplan_scores');
-  updateRanking();
-}
-
-function exportCSV() {
-  const rows = [['Runde','Uhrzeit','Feld','Spieler 1','Ergebnis 1','Ergebnis 2','Spieler 2']];
-  data.forEach((row, ri) => {
-    if (!row.matches) return;
-    const time = row.time.replace('\n',' – ');
-    row.matches.forEach((m, fi) => {
-      const a = document.getElementById(`r${ri}f${fi}_a`)?.value || '';
-      const b = document.getElementById(`r${ri}f${fi}_b`)?.value || '';
-      rows.push([row.name, time, `Feld ${fi+1}`, m[0], a, b, m[1]]);
-    });
-  });
-  const csv = rows.map(r => r.map(v => `"${v}"`).join(';')).join('\r\n');
-  const bom = '\uFEFF'; // UTF-8 BOM für Excel
-  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Spielplan_Hauptspieltag1.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSV exportiert!');
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function updateRanking() {
-  const allPlayers = [
-    { key: 'Jens',    name: 'Jens Pergande',    absent: false },
-    { key: 'Seb.',    name: 'Sebastian Grün',    absent: false },
-    { key: 'Ali',     name: 'Ali Patzer',         absent: false },
-    { key: 'Rüd.',    name: 'Rüdiger Schulz',    absent: false },
-    { key: 'Tim',     name: 'Tim Patzer',         absent: false },
-    { key: 'Tom',     name: 'Tom Regenstein',     absent: false },
-    { key: 'Sven',    name: 'Sven Mampe',         absent: false },
-    { key: 'Klaus',   name: 'Klaus Riedel',        absent: false },
-    { key: 'Aldo',    name: 'Aldo Mampe',          absent: false },
-    { key: 'Eitel',   name: 'Eitel Redmer',        absent: false },
-    { key: 'Andreas', name: 'Andreas Nelhübel',   absent: false },
-    { key: 'Nils',    name: 'Nils Patzer',         absent: false },
-  ];
-
-  const totals = {};
-  allPlayers.forEach(p => totals[p.key] = 0);
-
-  // Hauptspieltag scores
-  data.forEach((row, ri) => {
-    if (!row.matches) return;
-    row.matches.forEach((m, fi) => {
-      const a = parseInt(document.getElementById(`r${ri}f${fi}_a`)?.value) || 0;
-      const b = parseInt(document.getElementById(`r${ri}f${fi}_b`)?.value) || 0;
-      totals[m[0]] += a;
-      totals[m[1]] += b;
-    });
-  });
-
-  // Nachholspiele scores
-  ['schindhard','okm'].forEach(loc => {
-    nachholData[loc].forEach((m, i) => {
-      const a = parseInt(document.getElementById(`nachhole-${loc}_${i}_a`)?.value) || 0;
-      const b = parseInt(document.getElementById(`nachhole-${loc}_${i}_b`)?.value) || 0;
-      totals[m[0]] += a;
-      totals[m[1]] += b;
-    });
-  });
-
-  const hasScores = Object.values(totals).some(v => v > 0);
-  const container = document.getElementById('ranking-container');
-
-  if (!hasScores) {
-    container.innerHTML = '<p class="ranking-empty">── Noch keine Ergebnisse eingetragen ──</p>';
-    return;
-  }
-
-  const sorted = allPlayers.slice().sort((a, b) => totals[b.key] - totals[a.key]);
-  const maxPts = totals[sorted[0]?.key] || 1;
-
-  let ranks = [];
-  let currentRank = 1;
-  sorted.forEach((p, i) => {
-    if (i > 0 && totals[p.key] < totals[sorted[i-1].key]) currentRank = i + 1;
-    ranks.push(currentRank);
-  });
-
-  const medals = ['gold','silver','bronze'];
-  const rankSymbols = ['🥇','🥈','🥉'];
-
-  let html = '<table class="ranking-table">';
-  sorted.forEach((player, i) => {
-    const rank = ranks[i];
-    const pts  = totals[player.key];
-    const pct  = Math.round((pts / maxPts) * 100);
-    const cls  = rank <= 3 ? medals[rank-1] : '';
-    const rankDisplay = rank <= 3 ? rankSymbols[rank-1] : rank + '.';
-    html += `<tr class="ranking-row">
-      <td class="rank-cell ${cls}">${rankDisplay}</td>
-      <td class="name-cell ${cls}">${player.name}</td>
-      <td class="bar-cell ${cls}">
-        <div class="bar-track">
-          <div class="bar-fill ${cls}" style="width:${pct}%"></div>
-        </div>
-      </td>
-      <td class="score-cell ${cls}">${pts}<span class="pts-label">Pkt</span></td>
-    </tr>`;
-  });
-  html += '</table>';
-  container.innerHTML = html;
-}
-
-// Auto-update ranking on any score input
-document.addEventListener('input', e => {
-  if (e.target.classList.contains('score-input')) updateRanking();
-});
-
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function loadScores(){const saved=JSON.parse(localStorage.getItem('spielplan_v3')||'{}');for(const[k,v]of Object.entries(saved)){const el=document.getElementById(k);if(el){el.value=v;if(v!=='')el.classList.add('filled');}}}
+function saveScores(){const scores={};document.querySelectorAll('.score-input').forEach(inp=>{scores[inp.id]=inp.value;});localStorage.setItem('spielplan_v3',JSON.stringify(scores));showToast('Ergebnisse gespeichert!');}
+function resetAll(){if(!confirm('Alle Ergebnisse zurücksetzen?'))return;document.querySelectorAll('.score-input').forEach(inp=>{inp.value='';inp.classList.remove('filled');});localStorage.removeItem('spielplan_v3');updateRanking();}
+function exportCSV(){const rows=[['Runde','Uhrzeit','Feld','Spieler 1','Erg. 1','Erg. 2','Spieler 2']];data.forEach((row,ri)=>{if(!row.matches)return;const time=row.time.replace('\n',' – ');row.matches.forEach((m,fi)=>{const a=document.getElementById(`r${ri}f${fi}_a`)?.value||'';const b=document.getElementById(`r${ri}f${fi}_b`)?.value||'';rows.push([row.name,time,`Feld ${fi+1}`,nameMap[m[0]]||m[0],a,b,nameMap[m[1]]||m[1]]);});});const csv=rows.map(r=>r.map(v=>`"${v}"`).join(';')).join('\r\n');const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Spielplan_KubbLigaMV2026.csv';a.click();URL.revokeObjectURL(url);showToast('CSV exportiert!');}
+async function syncToSheets(){const scores=[];data.forEach((row,ri)=>{if(!row.matches)return;row.matches.forEach((m,fi)=>{const a=document.getElementById(`r${ri}f${fi}_a`)?.value||'';const b=document.getElementById(`r${ri}f${fi}_b`)?.value||'';if(a!==''||b!=='')scores.push([row.name,nameMap[m[0]]||m[0],`${a}:${b}`,nameMap[m[1]]||m[1]]);});});try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({scores})});showToast('✓ Mit Google Sheets synchronisiert!');}catch(err){showToast('⚠ Sync fehlgeschlagen');}}
+async function loadFromSheets(){try{const res=await fetch(SCRIPT_URL+'?t='+Date.now());const json=await res.json();if(json.status==='ok'&&json.data&&json.data.length>1){json.data.slice(1).forEach(row=>{const[,p1,ergebnis,p2]=row;if(!ergebnis||!ergebnis.includes(':'))return;const[a,b]=ergebnis.split(':');const key1=Object.keys(nameMap).find(k=>nameMap[k]===p1)||p1;const key2=Object.keys(nameMap).find(k=>nameMap[k]===p2)||p2;data.forEach((row,ri)=>{if(!row.matches)return;row.matches.forEach((m,fi)=>{if(m[0]===key1&&m[1]===key2){const ia=document.getElementById(`r${ri}f${fi}_a`);const ib=document.getElementById(`r${ri}f${fi}_b`);if(ia){ia.value=a;markFilled(ia);}if(ib){ib.value=b;markFilled(ib);}}});});});updateRanking();}}catch(err){loadScores();updateRanking();}}
+function updateRanking(){const totals={};allPlayers.forEach(p=>totals[p.key]=0);data.forEach((row,ri)=>{if(!row.matches)return;row.matches.forEach((m,fi)=>{totals[m[0]]+=(parseInt(document.getElementById(`r${ri}f${fi}_a`)?.value)||0);totals[m[1]]+=(parseInt(document.getElementById(`r${ri}f${fi}_b`)?.value)||0);});});const hasScores=Object.values(totals).some(v=>v>0);const rc=document.getElementById('ranking-container');if(!hasScores){rc.innerHTML='<p class="ranking-empty">── Noch keine Ergebnisse eingetragen ──</p>';return;}const sorted=allPlayers.slice().sort((a,b)=>totals[b.key]-totals[a.key]);const maxPts=totals[sorted[0]?.key]||1;let ranks=[],currentRank=1;sorted.forEach((p,i)=>{if(i>0&&totals[p.key]<totals[sorted[i-1].key])currentRank=i+1;ranks.push(currentRank);});const medals=['gold','silver','bronze'],syms=['🥇','🥈','🥉'];let html='<table class="ranking-table">';sorted.forEach((player,i)=>{const rank=ranks[i],pts=totals[player.key],pct=Math.round((pts/maxPts)*100);const cls=rank<=3?medals[rank-1]:'',rd=rank<=3?syms[rank-1]:rank+'.';html+=`<tr class="ranking-row"><td class="rank-cell ${cls}">${rd}</td><td class="name-cell ${cls}">${player.name}</td><td class="bar-cell ${cls}"><div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div></td><td class="score-cell ${cls}">${pts}<span class="pts-label">Pkt</span></td></tr>`;});html+='</table>';rc.innerHTML=html;}
+document.addEventListener('input',e=>{if(e.target.classList.contains('score-input'))updateRanking();});
 loadFromSheets();
 </script>
 </body>

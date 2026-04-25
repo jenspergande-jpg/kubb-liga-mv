@@ -3,87 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kubb Liga MV 2026 – Rangliste</title>
+<title>Kubb Liga MV 2026 – Rangliste & Ergebnisse</title>
 <style>
   :root {
     --font-display: 'Impact', 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
     --font-mono:    'Courier New', 'Consolas', 'Menlo', monospace;
     --font-body:    -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    --bg: #0f1117;
-    --surface: #181c27;
-    --surface2: #1e2435;
-    --accent: #e8c84a;
-    --accent2: #4ae8a0;
-    --text: #e8eaf0;
-    --muted: #6b7394;
-    --border: #2a3050;
-    --radius: 6px;
+    --bg: #0f1117; --surface: #181c27; --surface2: #1e2435;
+    --accent: #e8c84a; --accent2: #4ae8a0; --text: #e8eaf0;
+    --muted: #6b7394; --border: #2a3050; --radius: 6px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; padding: 32px 16px 60px; }
-
-  header { text-align: center; margin-bottom: 40px; }
+  header { text-align: center; margin-bottom: 16px; }
   header::after { content: ''; display: block; width: 80px; height: 3px; background: var(--accent); margin: 12px auto 0; }
   .title-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
   h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 64px); letter-spacing: 3px; color: var(--text); line-height: 1; }
   h1 span { color: var(--accent); }
-
   .last-update { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-bottom: 32px; letter-spacing: 2px; }
-
-  /* ── Rangliste ── */
   .ranking-section { max-width: 700px; margin: 0 auto 48px; }
   .section-header { text-align: center; margin-bottom: 24px; }
   .section-header::before { content: ''; display: block; width: 100%; height: 1px; background: var(--border); margin-bottom: 24px; }
   .section-header h2 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); letter-spacing: 3px; }
   .section-header h2 span { color: var(--accent); }
   .section-subtitle { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
-
   .ranking-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
-  .ranking-row { transition: transform 0.15s; }
-  .ranking-row:hover { transform: translateX(4px); }
+  .ranking-row:hover { transform: translateX(4px); transition: transform 0.15s; }
   .rank-cell { width: 60px; padding: 14px 12px; background: var(--surface); border: 1px solid var(--border); border-right: none; border-radius: var(--radius) 0 0 var(--radius); font-family: var(--font-display); font-size: 22px; color: var(--muted); text-align: center; }
-  .rank-cell.gold   { color: #FFD700; border-color: #FFD700; background: #1a1900; }
+  .rank-cell.gold { color: #FFD700; border-color: #FFD700; background: #1a1900; }
   .rank-cell.silver { color: #C0C0C0; border-color: #C0C0C0; background: #161616; }
   .rank-cell.bronze { color: #CD7F32; border-color: #CD7F32; background: #1a1200; }
   .name-cell { padding: 14px 16px; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 15px; font-weight: 600; }
-  .name-cell.gold   { background: #1a1900; border-color: #FFD700; }
+  .name-cell.gold { background: #1a1900; border-color: #FFD700; }
   .name-cell.silver { background: #161616; border-color: #C0C0C0; }
   .name-cell.bronze { background: #1a1200; border-color: #CD7F32; }
   .bar-cell { padding: 14px 12px; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); width: 40%; }
-  .bar-cell.gold   { background: #1a1900; border-color: #FFD700; }
+  .bar-cell.gold { background: #1a1900; border-color: #FFD700; }
   .bar-cell.silver { background: #161616; border-color: #C0C0C0; }
   .bar-cell.bronze { background: #1a1200; border-color: #CD7F32; }
   .bar-track { background: var(--border); border-radius: 3px; height: 8px; width: 100%; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.8s cubic-bezier(.4,0,.2,1); }
-  .bar-fill.gold   { background: #FFD700; }
-  .bar-fill.silver { background: #C0C0C0; }
-  .bar-fill.bronze { background: #CD7F32; }
+  .bar-fill.gold { background: #FFD700; } .bar-fill.silver { background: #C0C0C0; } .bar-fill.bronze { background: #CD7F32; }
   .score-cell { padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-left: none; border-radius: 0 var(--radius) var(--radius) 0; font-family: var(--font-display); font-size: 22px; color: var(--accent); text-align: right; white-space: nowrap; min-width: 80px; }
-  .score-cell.gold   { color: #FFD700; background: #1a1900; border-color: #FFD700; }
+  .score-cell.gold { color: #FFD700; background: #1a1900; border-color: #FFD700; }
   .score-cell.silver { color: #C0C0C0; background: #161616; border-color: #C0C0C0; }
   .score-cell.bronze { color: #CD7F32; background: #1a1200; border-color: #CD7F32; }
   .score-cell .pts-label { font-size: 10px; color: var(--muted); font-family: var(--font-mono); letter-spacing: 1px; margin-left: 4px; }
-
-  /* ── Spielplan ── */
   .spielplan-section { max-width: 1100px; margin: 0 auto 48px; }
   .spielplan-title { font-family: var(--font-display); font-size: clamp(20px, 3vw, 32px); letter-spacing: 2px; color: var(--text); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
   .spielplan-title span { color: var(--accent); }
-
-  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
-  .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
   .result-card.has-score { border-color: var(--accent); }
-  .rc-round { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; min-width: 28px; }
-  .rc-players { flex: 1; font-size: 13px; font-weight: 600; }
-  .rc-score { font-family: var(--font-display); font-size: 20px; color: var(--accent); white-space: nowrap; }
-  .rc-score.pending { color: var(--muted); font-size: 14px; }
-
-  /* Nachholspiele */
-  .nachhole-badge { display: inline-block; background: var(--surface2); border: 1px solid var(--accent); border-radius: var(--radius); padding: 4px 10px; font-family: var(--font-display); font-size: 11px; letter-spacing: 2px; color: var(--accent); margin-right: 10px; }
-
+  .rc-round { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; min-width: 24px; }
+  .rc-players { flex: 1; font-size: 12px; font-weight: 600; }
+  .rc-score { font-family: var(--font-display); font-size: 18px; color: var(--accent); white-space: nowrap; }
+  .rc-score.pending { color: var(--muted); font-size: 13px; }
   .loading { text-align: center; padding: 60px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 2px; }
   .refresh-btn { display: block; margin: 24px auto 0; font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; padding: 10px 24px; background: transparent; color: var(--accent2); border: 1px solid var(--accent2); border-radius: var(--radius); cursor: pointer; transition: background 0.2s, color 0.2s; }
   .refresh-btn:hover { background: var(--accent2); color: #0f1117; }
-
   @media (max-width: 600px) {
     .bar-cell { display: none; }
     .rank-cell { width: 44px; font-size: 17px; padding: 10px 6px; }
@@ -94,212 +72,98 @@
 </style>
 </head>
 <body>
-
 <header>
   <p class="title-label">Kubb Liga Mecklenburg Vorpommern</p>
   <h1>Liga<span>übersicht</span> 2026</h1>
 </header>
-
 <div class="last-update" id="last-update">── Lade Daten ──</div>
-
-<div id="main-content">
-  <div class="loading">── Verbinde mit Google Sheets ──</div>
-</div>
-
+<div id="main-content"><div class="loading">── Verbinde mit Google Sheets ──</div></div>
 <button class="refresh-btn" onclick="loadData()">↻ Aktualisieren</button>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2IrIx09M_GFPDMBjasd64Isgc2O3SYOR4Cgoe3SRck2YMrXfr6HSM7woAX_t6TPdV/exec';
-
-const allPlayers = [
-  {key:'Jens',  name:'Jens Pergande'},
-  {key:'Seb.',  name:'Sebastian Grün'},
-  {key:'Ali',   name:'Ali Patzer'},
-  {key:'Rüd.',  name:'Rüdiger Schulz'},
-  {key:'Tim',   name:'Tim Patzer'},
-  {key:'Tom',   name:'Tom Regenstein'},
-  {key:'Sven',  name:'Sven Mampe'},
-  {key:'Klaus', name:'Klaus Riedel'},
-  {key:'Aldo',  name:'Aldo Mampe'},
-  {key:'Eitel', name:'Eitel Redmer'},
-  {key:'Andreas',name:'Andreas Nelhübel'},
-  {key:'Nils',  name:'Nils Patzer'},
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz2IrIx09M_GFPDMBjasd64Isgc2O3SYOR4Cgoe3SRck2YMrXfr6HSM7woAX_t6TPdV/exec';
+const allPlayers=[{key:'Jens',name:'Jens Pergande'},{key:'Seb.',name:'Sebastian Grün'},{key:'Ali',name:'Ali Patzer'},{key:'Rüd.',name:'Rüdiger Schulz'},{key:'Tim',name:'Tim Patzer'},{key:'Tom',name:'Tom Regenstein'},{key:'Sven',name:'Sven Mampe'},{key:'Klaus',name:'Klaus Riedel'},{key:'Aldo',name:'Aldo Mampe'},{key:'Eitel',name:'Eitel Redmer'},{key:'Andreas',name:'Andreas Nelhübel'},{key:'Nils',name:'Nils Patzer'}];
+const mainData=[
+  {round:'R1', name:'Runde 1',  matches:[['Jens','Nils'],['Seb.','Andreas'],['Ali','Eitel'],['Rüd.','Aldo'],['Tim','Klaus'],['Tom','Sven']]},
+  {round:'R2', name:'Runde 2',  matches:[['Jens','Andreas'],['Nils','Eitel'],['Seb.','Aldo'],['Ali','Klaus'],['Rüd.','Sven'],['Tim','Tom']]},
+  {round:'R3', name:'Runde 3',  matches:[['Jens','Eitel'],['Andreas','Aldo'],['Nils','Klaus'],['Seb.','Sven'],['Ali','Tom'],['Rüd.','Tim']]},
+  {round:'R4', name:'Runde 4',  matches:[['Jens','Aldo'],['Eitel','Klaus'],['Andreas','Sven'],['Nils','Tom'],['Seb.','Tim'],['Ali','Rüd.']]},
+  {round:'R5', name:'Runde 5',  matches:[['Jens','Klaus'],['Aldo','Sven'],['Eitel','Tom'],['Andreas','Tim'],['Nils','Rüd.'],['Seb.','Ali']]},
+  {round:'R6', name:'Runde 6',  matches:[['Jens','Sven'],['Klaus','Tom'],['Aldo','Tim'],['Eitel','Rüd.'],['Andreas','Ali'],['Nils','Seb.']]},
+  {round:'R7', name:'Runde 7',  matches:[['Jens','Tom'],['Sven','Tim'],['Klaus','Rüd.'],['Aldo','Ali'],['Eitel','Seb.'],['Andreas','Nils']]},
+  {round:'R8', name:'Runde 8',  matches:[['Jens','Tim'],['Tom','Rüd.'],['Sven','Ali'],['Klaus','Seb.'],['Aldo','Nils'],['Eitel','Andreas']]},
+  {round:'R9', name:'Runde 9',  matches:[['Jens','Rüd.'],['Tim','Ali'],['Tom','Seb.'],['Sven','Nils'],['Klaus','Andreas'],['Aldo','Eitel']]},
+  {round:'R10',name:'Runde 10', matches:[['Jens','Ali'],['Rüd.','Seb.'],['Tim','Nils'],['Tom','Andreas'],['Sven','Eitel'],['Klaus','Aldo']]},
+  {round:'R11',name:'Runde 11', matches:[['Jens','Seb.'],['Ali','Nils'],['Rüd.','Andreas'],['Tim','Eitel'],['Tom','Aldo'],['Sven','Klaus']]},
 ];
+const nameMap={'Jens':'Jens Pergande','Seb.':'Sebastian Grün','Ali':'Ali Patzer','Rüd.':'Rüdiger Schulz','Tim':'Tim Patzer','Tom':'Tom Regenstein','Sven':'Sven Mampe','Klaus':'Klaus Riedel','Aldo':'Aldo Mampe','Eitel':'Eitel Redmer','Andreas':'Andreas Nelhübel','Nils':'Nils Patzer'};
+let scores={};
 
-const mainData = [
-  {round:'R1', name:'Runde 1', time:'10:00–10:25', matches:[['Jens','Seb.'],['Ali','Rüd.'],['Tim','Tom'],['Sven','Klaus'],['Aldo','Eitel']]},
-  {round:'R2', name:'Runde 2', time:'10:30–10:55', matches:[['Jens','Rüd.'],['Seb.','Tom'],['Ali','Klaus'],['Tim','Eitel'],['Sven','Aldo']]},
-  {round:'R3', name:'Runde 3', time:'11:00–11:25', matches:[['Jens','Tom'],['Rüd.','Klaus'],['Seb.','Eitel'],['Ali','Aldo'],['Tim','Sven']]},
-  {round:'R4', name:'Runde 4', time:'11:30–11:55', matches:[['Jens','Klaus'],['Tom','Eitel'],['Rüd.','Aldo'],['Seb.','Sven'],['Ali','Tim']]},
-  {round:'R5', name:'Runde 5', time:'12:20–12:45', matches:[['Jens','Eitel'],['Klaus','Aldo'],['Tom','Sven'],['Rüd.','Tim'],['Seb.','Ali']]},
-  {round:'R6', name:'Runde 6', time:'12:50–13:15', matches:[['Jens','Aldo'],['Eitel','Sven'],['Klaus','Tim'],['Tom','Ali'],['Rüd.','Seb.']]},
-  {round:'R7', name:'Runde 7', time:'13:20–13:45', matches:[['Jens','Sven'],['Aldo','Tim'],['Eitel','Ali'],['Klaus','Seb.'],['Tom','Rüd.']]},
-  {round:'R8', name:'Runde 8', time:'13:50–14:15', matches:[['Jens','Tim'],['Sven','Ali'],['Aldo','Seb.'],['Eitel','Rüd.'],['Klaus','Tom']]},
-  {round:'R9', name:'Runde 9', time:'14:20–14:45', matches:[['Jens','Ali'],['Tim','Seb.'],['Sven','Rüd.'],['Aldo','Tom'],['Eitel','Klaus']]},
-];
-
-const nachholData = {
-  schindhard: [
-    ['Andreas','Jens'],['Andreas','Ali'],['Andreas','Tim'],['Andreas','Tom'],
-    ['Andreas','Sven'],['Andreas','Klaus'],['Andreas','Aldo'],
-    ['Nils','Jens'],['Nils','Ali'],['Nils','Tim'],['Nils','Tom'],
-    ['Nils','Sven'],['Nils','Klaus'],['Nils','Aldo'],
-  ],
-  okm: [
-    ['Andreas','Seb.'],['Andreas','Rüd.'],['Andreas','Eitel'],
-    ['Nils','Seb.'],['Nils','Rüd.'],['Nils','Eitel'],
-  ]
-};
-
-const nameMap = {
-  'Jens':'Jens Pergande','Seb.':'Sebastian Grün','Ali':'Ali Patzer',
-  'Rüd.':'Rüdiger Schulz','Tim':'Tim Patzer','Tom':'Tom Regenstein',
-  'Sven':'Sven Mampe','Klaus':'Klaus Riedel','Aldo':'Aldo Mampe',
-  'Eitel':'Eitel Redmer','Andreas':'Andreas Nelhübel','Nils':'Nils Patzer'
-};
-
-// scores[p1_name][p2_name] = {a, b}
-let scores = {};
-
-async function loadData() {
-  document.getElementById('last-update').textContent = '── Lade Daten ──';
-  try {
-    const res = await fetch(SCRIPT_URL + '?t=' + Date.now());
-    const json = await res.json();
-    scores = {};
-    if (json.status === 'ok' && json.data && json.data.length > 1) {
-      json.data.slice(1).forEach(row => {
-        const [,p1,ergebnis,p2] = row;
-        if (!ergebnis || !ergebnis.includes(':')) return;
-        const [a,b] = ergebnis.split(':');
-        if (!scores[p1]) scores[p1] = {};
-        scores[p1][p2] = {a: parseInt(a)||0, b: parseInt(b)||0};
+async function loadData(){
+  document.getElementById('last-update').textContent='── Lade Daten ──';
+  try{
+    const res=await fetch(SCRIPT_URL+'?t='+Date.now());
+    const json=await res.json();
+    scores={};
+    if(json.status==='ok'&&json.data&&json.data.length>1){
+      json.data.slice(1).forEach(row=>{
+        const[,p1,ergebnis,p2]=row;
+        if(!ergebnis||!ergebnis.includes(':'))return;
+        const[a,b]=ergebnis.split(':');
+        if(!scores[p1])scores[p1]={};
+        scores[p1][p2]={a:parseInt(a)||0,b:parseInt(b)||0};
       });
     }
     render();
-    const now = new Date();
-    document.getElementById('last-update').textContent =
-      `Zuletzt aktualisiert: ${now.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'})} Uhr`;
-  } catch(err) {
-    document.getElementById('last-update').textContent = '⚠ Keine Verbindung – bitte aktualisieren';
-    document.getElementById('main-content').innerHTML =
-      '<div class="loading">⚠ Verbindung fehlgeschlagen</div>';
+    const now=new Date();
+    document.getElementById('last-update').textContent=`Zuletzt aktualisiert: ${now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr`;
+  }catch(err){
+    document.getElementById('last-update').textContent='⚠ Keine Verbindung – bitte aktualisieren';
+    document.getElementById('main-content').innerHTML='<div class="loading">⚠ Verbindung fehlgeschlagen</div>';
   }
 }
 
-function getScore(p1name, p2name) {
-  if (scores[p1name] && scores[p1name][p2name]) return scores[p1name][p2name];
-  return null;
-}
+function getScore(p1name,p2name){if(scores[p1name]&&scores[p1name][p2name])return scores[p1name][p2name];return null;}
 
-function render() {
-  const totals = {};
-  allPlayers.forEach(p => totals[p.name] = 0);
+function render(){
+  const totals={};
+  allPlayers.forEach(p=>totals[p.name]=0);
+  mainData.forEach(row=>{row.matches.forEach(m=>{const p1=nameMap[m[0]],p2=nameMap[m[1]];const s=getScore(p1,p2);if(s){totals[p1]+=s.a;totals[p2]+=s.b;}});});
 
-  // Calculate totals
-  mainData.forEach(row => {
-    row.matches.forEach(m => {
-      const p1 = nameMap[m[0]], p2 = nameMap[m[1]];
-      const s = getScore(p1, p2);
-      if (s) { totals[p1] += s.a; totals[p2] += s.b; }
+  let html='';
+
+  // Rangliste
+  html+=`<div class="ranking-section"><div class="section-header"><h2>Rang<span>liste</span></h2><p class="section-subtitle">Gesamtpunktzahl · Kubb Liga MV 2026</p></div>`;
+  const sorted=allPlayers.slice().sort((a,b)=>totals[b.name]-totals[a.name]);
+  const maxPts=totals[sorted[0]?.name]||1;
+  let ranks=[],currentRank=1;
+  sorted.forEach((p,i)=>{if(i>0&&totals[p.name]<totals[sorted[i-1].name])currentRank=i+1;ranks.push(currentRank);});
+  const medals=['gold','silver','bronze'],syms=['🥇','🥈','🥉'];
+  html+='<table class="ranking-table">';
+  sorted.forEach((player,i)=>{
+    const rank=ranks[i],pts=totals[player.name],pct=Math.round((pts/maxPts)*100);
+    const cls=rank<=3?medals[rank-1]:'',rd=rank<=3?syms[rank-1]:rank+'.';
+    html+=`<tr class="ranking-row"><td class="rank-cell ${cls}">${rd}</td><td class="name-cell ${cls}">${player.name}</td><td class="bar-cell ${cls}"><div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div></td><td class="score-cell ${cls}">${pts}<span class="pts-label">Pkt</span></td></tr>`;
+  });
+  html+='</table></div>';
+
+  // Spielplan
+  html+=`<div class="spielplan-section"><div class="spielplan-title">1. Haupt<span>spieltag</span></div><div class="results-grid">`;
+  mainData.forEach(row=>{
+    row.matches.forEach((m,mi)=>{
+      const p1=nameMap[m[0]],p2=nameMap[m[1]];
+      const s=getScore(p1,p2);
+      const feldNr=mi+1;
+      html+=`<div class="result-card ${s?'has-score':''}"><span class="rc-round">${row.round}<br><small style="color:var(--accent);font-size:9px">F${feldNr}</small></span><span class="rc-players">${p1}<br><small style="color:var(--muted);font-weight:400">vs</small> ${p2}</span><span class="rc-score ${s?'':'pending'}">${s?`${s.a}:${s.b}`:'–:–'}</span></div>`;
     });
   });
-  ['schindhard','okm'].forEach(loc => {
-    nachholData[loc].forEach(m => {
-      const p1 = nameMap[m[0]], p2 = nameMap[m[1]];
-      const s = getScore(p1, p2);
-      if (s) { totals[p1] += s.a; totals[p2] += s.b; }
-    });
-  });
+  html+='</div></div>';
 
-  let html = '';
-
-  // ── Rangliste ──
-  html += `<div class="ranking-section">
-    <div class="section-header">
-      <h2>Rang<span>liste</span></h2>
-      <p class="section-subtitle">Gesamtpunktzahl · Landesliga · inkl. Nachholspiele</p>
-    </div>`;
-
-  const sorted = allPlayers.slice().sort((a,b) => totals[b.name] - totals[a.name]);
-  const maxPts = totals[sorted[0]?.name] || 1;
-  let ranks = [], currentRank = 1;
-  sorted.forEach((p,i) => {
-    if (i > 0 && totals[p.name] < totals[sorted[i-1].name]) currentRank = i+1;
-    ranks.push(currentRank);
-  });
-
-  const medals = ['gold','silver','bronze'], syms = ['🥇','🥈','🥉'];
-  html += '<table class="ranking-table">';
-  sorted.forEach((player,i) => {
-    const rank = ranks[i], pts = totals[player.name];
-    const pct = Math.round((pts/maxPts)*100);
-    const cls = rank <= 3 ? medals[rank-1] : '';
-    const rd = rank <= 3 ? syms[rank-1] : rank+'.';
-    html += `<tr class="ranking-row">
-      <td class="rank-cell ${cls}">${rd}</td>
-      <td class="name-cell ${cls}">${player.name}</td>
-      <td class="bar-cell ${cls}"><div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div></td>
-      <td class="score-cell ${cls}">${pts}<span class="pts-label">Pkt</span></td>
-    </tr>`;
-  });
-  html += '</table></div>';
-
-  // ── Hauptspieltag Ergebnisse ──
-  html += `<div class="spielplan-section">
-    <div class="spielplan-title">1. Haupt<span>spieltag</span></div>
-    <div class="results-grid">`;
-  mainData.forEach(row => {
-    row.matches.forEach(m => {
-      const p1 = nameMap[m[0]], p2 = nameMap[m[1]];
-      const s = getScore(p1, p2);
-      html += `<div class="result-card ${s?'has-score':''}">
-        <span class="rc-round">${row.round}</span>
-        <span class="rc-players">${p1}<br><small style="color:var(--muted);font-weight:400">vs</small> ${p2}</span>
-        <span class="rc-score ${s?'':'pending'}">${s ? `${s.a}:${s.b}` : '–:–'}</span>
-      </div>`;
-    });
-  });
-  html += '</div></div>';
-
-  // ── Nachholspiele Schindhard ──
-  html += `<div class="spielplan-section">
-    <div class="spielplan-title"><span class="nachhole-badge">NACHHOLSPIELE</span>📍 Schind<span>hard</span> <small style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">14.–16. Mai 2026</small></div>
-    <div class="results-grid">`;
-  nachholData.schindhard.forEach(m => {
-    const p1 = nameMap[m[0]], p2 = nameMap[m[1]];
-    const s = getScore(p1, p2);
-    html += `<div class="result-card ${s?'has-score':''}">
-      <span class="rc-players" style="color:var(--accent2)">${p1}</span>
-      <small style="color:var(--muted);font-family:var(--font-mono);font-size:10px;margin:0 6px">vs</small>
-      <span class="rc-players">${p2}</span>
-      <span class="rc-score ${s?'':'pending'}">${s ? `${s.a}:${s.b}` : '–:–'}</span>
-    </div>`;
-  });
-  html += '</div></div>';
-
-  // ── Nachholspiele OKM ──
-  html += `<div class="spielplan-section">
-    <div class="spielplan-title"><span class="nachhole-badge">NACHHOLSPIELE</span>📍 <span>OKM</span> <small style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">30. Mai 2026</small></div>
-    <div class="results-grid">`;
-  nachholData.okm.forEach(m => {
-    const p1 = nameMap[m[0]], p2 = nameMap[m[1]];
-    const s = getScore(p1, p2);
-    html += `<div class="result-card ${s?'has-score':''}">
-      <span class="rc-players" style="color:var(--accent2)">${p1}</span>
-      <small style="color:var(--muted);font-family:var(--font-mono);font-size:10px;margin:0 6px">vs</small>
-      <span class="rc-players">${p2}</span>
-      <span class="rc-score ${s?'':'pending'}">${s ? `${s.a}:${s.b}` : '–:–'}</span>
-    </div>`;
-  });
-  html += '</div></div>';
-
-  document.getElementById('main-content').innerHTML = html;
+  document.getElementById('main-content').innerHTML=html;
 }
 
 loadData();
-// Auto-refresh every 60 seconds
-setInterval(loadData, 60000);
+setInterval(loadData,60000);
 </script>
 </body>
 </html>
